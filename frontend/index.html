@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Every Answer Hides a Crack</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    
+    :root {
+      --bg:        #0a0905;
+      --bg2:       #100f0a;
+      --bg3:       #161510;
+      --surface:   #1c1a12;
+      --surface2:  #232014;
+      --border:    #2e2b1e;
+      --border2:   #3d3925;
+      --amber:     #c8921a;
+      --amber2:    #e8aa30;
+      --amber-dim: #7a5510;
+      --red:       #c23030;
+      --red-dim:   #6b1a1a;
+      --green:     #4a7c4e;
+      --text:      #d4c89a;
+      --text2:     #9a9070;
+      --text3:     #5a5440;
+      --suspect:   #b8a878;
+      --player:    #d4c89a;
+      --font-main: 'Crimson Pro', Georgia, serif;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-type: 'Special Elite', cursive;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-main);
+      overflow: hidden;
+    }
+
+    
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    
+    #app {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    
+    #screen-landing {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #screen-landing::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 60%, rgba(200,146,26,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 100% 100% at 50% 100%, rgba(200,146,26,0.03) 0%, transparent 60%);
+    }
+
+    
+    #screen-game {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    
+    #screen-result {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    
+    .landing-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--amber-dim);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .landing-title {
+      font-family: var(--font-type);
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      color: var(--amber);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 40px rgba(200,146,26,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .landing-subtitle {
+      font-family: var(--font-type);
+      font-size: clamp(1rem, 2.5vw, 1.6rem);
+      color: var(--text3);
+      margin-bottom: 2.5rem;
+      font-style: italic;
+      position: relative;
+      z-index: 1;
+    }
+
+    .landing-description {
+      max-width: 480px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text2);
+      margin-bottom: 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .landing-description strong {
+      color: var(--text);
+    }
+
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      padding: 0.9rem 2.5rem;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      transition: all 0.2s ease;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+
+    .btn-primary:hover {
+      background: var(--amber);
+      color: var(--bg);
+      box-shadow: 0 0 30px rgba(200,146,26,0.4);
+    }
+
+    .btn-primary:active { transform: scale(0.97); }
+
+    .landing-rules {
+      position: relative;
+      z-index: 1;
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .rule-item {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rule-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--amber-dim);
+      border-radius: 50%;
+    }
+
+    
+    #game-header {
+      flex-shrink: 0;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    
+    #ascii-portrait {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      line-height: 1.3;
+      color: var(--amber-dim);
+      white-space: pre;
+      margin-right: 0.8rem;
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+
+    
+    #stress-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    #stress-label {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      color: var(--text3);
+      text-transform: uppercase;
+    }
+    #stress-bar-track {
+      width: 80px;
+      height: 6px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    #stress-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 3px;
+      background: var(--amber);
+      transition: width 0.6s ease, background 0.6s ease;
+    }
+    #stress-bar-fill.high {
+      background: var(--red);
+      box-shadow: 0 0 6px rgba(194,48,48,0.5);
+    }
+    #stress-level-text {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text2);
+    }
+
+    
+    #result-run-stats {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 0.8rem 0 1.2rem;
+      flex-wrap: wrap;
+    }
+    .run-stat {
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+    .run-stat-val {
+      font-size: 1.4rem;
+      color: var(--amber);
+      display: block;
+    }
+    .run-stat-label {
+      font-size: 0.6rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    #game-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .header-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+
+    #suspect-name-display {
+      font-family: var(--font-type);
+      font-size: 1.1rem;
+      color: var(--amber);
+    }
+
+    #suspect-appearance {
+      font-size: 0.78rem;
+      color: var(--text3);
+      font-style: italic;
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #game-header-center {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .stat-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+    }
+
+    .stat-value {
+      color: var(--amber);
+      font-size: 1rem;
+    }
+
+    #game-header-right {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .btn-sm {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-sm:hover {
+      border-color: var(--amber-dim);
+      color: var(--amber);
+    }
+
+    .btn-accuse {
+      border-color: var(--red-dim);
+      color: var(--red);
+    }
+
+    .btn-accuse:hover {
+      background: var(--red-dim);
+      border-color: var(--red);
+      color: #ff8080;
+      box-shadow: 0 0 20px rgba(194,48,48,0.3);
+    }
+
+    
+    #game-main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    
+    #chat-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+    }
+
+    
+    #crime-badge {
+      flex-shrink: 0;
+      padding: 0.5rem 1rem;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+
+    #crime-badge span {
+      color: var(--amber-dim);
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scroll-behavior: smooth;
+    }
+
+    
+    #messages::-webkit-scrollbar { width: 4px; }
+    #messages::-webkit-scrollbar-track { background: transparent; }
+    #messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      animation: msgIn 0.3s ease;
+    }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .msg-label.detective { color: var(--text3); }
+    .msg-label.suspect   { color: var(--amber-dim); }
+
+    .msg-bubble {
+      padding: 0.75rem 1rem;
+      border-radius: 0;
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 85%;
+    }
+
+    .message.detective .msg-bubble {
+      background: var(--surface);
+      border-left: 2px solid var(--border2);
+      color: var(--player);
+      align-self: flex-end;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .message.suspect .msg-bubble {
+      background: var(--bg3);
+      border-left: 2px solid var(--amber-dim);
+      color: var(--suspect);
+      align-self: flex-start;
+      border-radius: 0 4px 4px 0;
+      font-style: italic;
+    }
+
+    .message.suspect .msg-bubble.contradiction-hint {
+      border-left-color: var(--red);
+      background: rgba(194,48,48,0.05);
+    }
+
+    
+    .message.system .msg-bubble {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--text3);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      align-self: center;
+      text-align: center;
+      max-width: 100%;
+    }
+
+    
+    #typing-indicator {
+      display: none;
+      padding: 0.5rem 1rem;
+      align-self: flex-start;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .typing-dots span {
+      width: 5px;
+      height: 5px;
+      background: var(--amber-dim);
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink {
+      0%, 60%, 100% { opacity: 0.2; transform: scale(1); }
+      30%            { opacity: 1;   transform: scale(1.3); }
+    }
+
+    
+    #input-area {
+      flex-shrink: 0;
+      padding: 0.75rem 1rem;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-end;
+    }
+
+    #message-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      padding: 0.65rem 0.9rem;
+      resize: none;
+      min-height: 44px;
+      max-height: 120px;
+      outline: none;
+      line-height: 1.5;
+      transition: border-color 0.15s;
+    }
+
+    #message-input:focus { border-color: var(--amber-dim); }
+    #message-input::placeholder { color: var(--text3); font-style: italic; }
+
+    #send-btn {
+      background: var(--amber);
+      border: none;
+      color: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+      height: 44px;
+      transition: all 0.15s;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    }
+
+    #send-btn:hover { background: var(--amber2); }
+    #send-btn:disabled { background: var(--border2); color: var(--text3); cursor: not-allowed; clip-path: none; }
+
+    
+    #notes-panel {
+      width: 230px;
+      flex-shrink: 0;
+      background: var(--bg2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-title {
+      padding: 0.6rem 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    #notes-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    #notes-list::-webkit-scrollbar { width: 3px; }
+    #notes-list::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .note-item {
+      padding: 0.5rem 0.6rem;
+      background: var(--surface);
+      border-left: 2px solid var(--border2);
+      font-size: 0.8rem;
+      color: var(--text2);
+      line-height: 1.4;
+      animation: msgIn 0.2s ease;
+    }
+
+    .note-item.flagged {
+      border-left-color: var(--red);
+      background: rgba(194,48,48,0.06);
+      color: #c08080;
+    }
+
+    .note-empty {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-align: center;
+      margin-top: 1rem;
+      font-style: italic;
+    }
+
+    #quick-actions {
+      padding: 0.6rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .quick-btn {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      padding: 0.4rem 0.5rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .quick-btn:hover {
+      border-color: var(--amber-dim);
+      color: var(--amber);
+      background: rgba(200,146,26,0.05);
+    }
+
+    
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    #modal-overlay.open { display: flex; }
+
+    #accusation-modal {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      width: min(500px, 95vw);
+      padding: 2rem;
+      position: relative;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .modal-title {
+      font-family: var(--font-type);
+      font-size: 1.5rem;
+      color: var(--red);
+      margin-bottom: 0.3rem;
+    }
+
+    .modal-subtitle {
+      font-size: 0.85rem;
+      color: var(--text3);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text3);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      padding: 0.6rem 0.8rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-input:focus, .form-textarea:focus { border-color: var(--amber-dim); }
+    .form-textarea { resize: vertical; min-height: 80px; }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-cancel:hover { border-color: var(--text2); }
+
+    .btn-submit-accuse {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--red-dim);
+      border: 1px solid var(--red);
+      color: #ff9090;
+      padding: 0.6rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-submit-accuse:hover {
+      background: var(--red);
+      color: white;
+      box-shadow: 0 0 20px rgba(194,48,48,0.4);
+    }
+
+    
+    #result-container {
+      max-width: 600px;
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    #result-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 1rem;
+    }
+
+    #result-verdict {
+      font-family: var(--font-type);
+      font-size: clamp(2rem, 7vw, 4rem);
+      margin-bottom: 0.5rem;
+      line-height: 1;
+    }
+
+    #result-verdict.perfect  { color: var(--amber); text-shadow: 0 0 30px rgba(200,146,26,0.5); }
+    #result-verdict.good     { color: #90c090; }
+    #result-verdict.partial  { color: #c0a040; }
+    #result-verdict.fail     { color: var(--red); }
+
+    #result-detail {
+      font-size: 1.05rem;
+      color: var(--text2);
+      font-style: italic;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    #result-score-display {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .score-number {
+      font-family: var(--font-type);
+      font-size: 4rem;
+      color: var(--amber);
+    }
+
+    .score-max {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--text3);
+    }
+
+    #result-breakdown {
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .breakdown-title {
+      padding: 0.5rem 0.9rem;
+      background: var(--surface);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .breakdown-row:last-child { border-bottom: none; }
+
+    .breakdown-label { color: var(--text2); }
+
+    .breakdown-points {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .breakdown-points.correct { color: var(--amber); }
+    .breakdown-points.wrong   { color: var(--text3); }
+
+    #result-truth {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .truth-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-bottom: 0.8rem;
+    }
+
+    .truth-row {
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+    }
+
+    .truth-key {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    .truth-val { color: var(--text); }
+
+    #result-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    
+    #screen-confession {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      background: var(--bg);
+    }
+    #confession-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      animation: pulse 1s infinite;
+    }
+    #confession-name {
+      font-family: var(--font-type);
+      font-size: 2.2rem;
+      color: var(--amber);
+      margin-bottom: 0.3rem;
+    }
+    #confession-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    #confession-text {
+      max-width: 560px;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: var(--text);
+      font-style: italic;
+      border-left: 3px solid var(--red);
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+    #confession-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+    
+    #leaderboard-section {
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 500px;
+    }
+    #leaderboard-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .lb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-rank { font-family: var(--font-mono); color: var(--text3); font-size: 0.7rem; min-width: 20px; }
+    .lb-name { color: var(--text); flex: 1; margin: 0 0.8rem; }
+    .lb-score { font-family: var(--font-mono); color: var(--amber); }
+    .lb-meta { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); margin-left: 0.5rem; }
+    .lb-empty { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text3); text-align: center; padding: 0.6rem; font-style: italic; }
+
+    
+    .streaming-cursor::after {
+      content: '▋';
+      animation: blink 0.7s step-end infinite;
+      color: var(--amber);
+      font-size: 0.9em;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    
+    .note-item.briefing {
+      border-left-color: var(--amber-dim);
+      background: rgba(200,146,26,0.04);
+      color: var(--text2);
+    }
+
+    
+    #sound-toggle {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      padding: 0.3rem 0.5rem;
+      cursor: pointer;
+      z-index: 100;
+      letter-spacing: 0.1em;
+    }
+    #sound-toggle:hover { border-color: var(--amber-dim); color: var(--amber); }
+
+    
+    #loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #loading-overlay.active { display: flex; }
+
+    .loading-text {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+
+    
+    @media (max-width: 640px) {
+      #notes-panel { display: none; }
+      #suspect-appearance { display: none; }
+    }
+
+    
+    #leaderboard-section {
+      margin-top: 1.8rem;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    .leaderboard-title {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text3);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .lb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.3rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+    }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-rank { color: var(--amber-dim); min-width: 1.5rem; }
+    .lb-name { color: var(--text2); flex: 1; text-align: left; padding: 0 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lb-score { color: var(--amber); min-width: 3rem; text-align: right; }
+    .lb-verdict { color: var(--text3); font-size: 0.58rem; min-width: 4rem; text-align: right; }
+    #leaderboard-list:empty::after {
+      content: 'No runs yet. Begin your first interrogation.';
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--text3);
+      padding: 0.4rem 0;
+    }
+
+    
+    #case-file {
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      margin-bottom: 0.6rem;
+      background: var(--bg2);
+    }
+    .case-file-header {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      color: var(--amber-dim);
+      padding: 0.3rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+    }
+    #case-file-body {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    
+    #confession-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 5000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    #confession-box {
+      background: var(--surface);
+      border: 1px solid var(--red);
+      border-radius: 6px;
+      max-width: 520px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(194,48,48,0.3);
+    }
+    #confession-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    #confession-name {
+      font-family: var(--font-type);
+      font-size: 1.4rem;
+      color: var(--amber);
+      margin-bottom: 1rem;
+    }
+    #confession-text {
+      font-family: var(--font-main);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--suspect);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      min-height: 4rem;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  
+  <div id="loading-overlay">
+    <div class="typing-dots">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="loading-text">Preparing the interrogation room...</div>
+  </div>
+
+  
+  <div id="screen-landing">
+    <div class="landing-eyebrow">Interrogation Simulation</div>
+    <h1 class="landing-title">Every Answer<br>Hides a Crack</h1>
+    <p class="landing-subtitle">Ask the right questions. Find the lie.</p>
+    <p class="landing-description">
+      A <strong>suspect</strong> sits across from you. They're guilty — but they won't say so.<br><br>
+      Your job: interrogate them, spot the <strong>contradictions</strong>, and make the accusation before they walk free.
+    </p>
+    <button class="btn-primary" id="start-btn" onclick="startNewGame()">Begin Interrogation</button>
+    <div class="landing-rules">
+      <div class="rule-item"><div class="rule-dot"></div>No time limit</div>
+      <div class="rule-item"><div class="rule-dot"></div>Score for efficiency</div>
+      <div class="rule-item"><div class="rule-dot"></div>Every suspect is unique</div>
+      <div class="rule-item"><div class="rule-dot"></div>Break them for bonus points</div>
+    </div>
+
+    <div id="leaderboard-section">
+      <div id="leaderboard-title">▸ Best Runs</div>
+      <div id="leaderboard-list"><div class="lb-empty">No runs yet. Be the first.</div></div>
+    </div>
+  </div>
+
+  
+  <div id="screen-game">
+
+    
+    <div id="game-header">
+      <div id="game-header-left" style="display:flex;align-items:flex-start;gap:0;">
+        <pre id="ascii-portrait"></pre>
+        <div>
+          <div class="header-label">Suspect</div>
+          <div id="suspect-name-display">—</div>
+          <div id="suspect-appearance"></div>
+        </div>
+      </div>
+
+      <div id="game-header-center">
+        <div class="stat-badge">
+          <div class="stat-value" id="stat-questions">0</div>
+          <div>Questions</div>
+        </div>
+        <div class="stat-badge">
+          <div class="stat-value" id="stat-timer">0:00</div>
+          <div>Elapsed</div>
+        </div>
+        <div id="stress-container">
+          <div id="stress-label">Pressure</div>
+          <div id="stress-bar-track"><div id="stress-bar-fill"></div></div>
+          <div id="stress-level-text">Composed</div>
+        </div>
+      </div>
+
+      <div id="game-header-right">
+        <button class="btn-sm" onclick="getHint()">💡 Hint (−10)</button>
+        <button class="btn-sm btn-accuse" onclick="openAccusationModal()">⚡ ACCUSE</button>
+        <button class="btn-sm" onclick="startNewGame()">↺ New</button>
+      </div>
+    </div>
+
+    
+    <div id="game-main">
+
+      
+      <div id="chat-panel">
+        <div id="crime-badge">
+          Case category: <span id="crime-category-display">—</span>
+          &nbsp;·&nbsp; Press "ACCUSE" when ready
+        </div>
+
+        <div id="messages"></div>
+
+        
+        <div id="typing-indicator" style="padding:0.5rem 1rem;">
+          <div class="typing-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        
+        <div id="input-area">
+          <textarea
+            id="message-input"
+            placeholder="Ask a question or press ENTER to send..."
+            rows="1"
+            maxlength="500"
+          ></textarea>
+          <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+
+      
+      <div id="notes-panel">
+        <div class="panel-title">🗒 Detective Notes</div>
+
+        
+        <div id="case-file" style="display:none;">
+          <div class="case-file-header">📁 CASE FILE</div>
+          <div id="case-file-body"></div>
+        </div>
+
+        <div id="notes-list">
+          <div class="note-empty" id="notes-empty">Contradictions and clues will appear here automatically.</div>
+        </div>
+        <div id="quick-actions">
+          <div class="panel-title" style="border:none;padding:0 0 0.4rem 0;">Quick questions:</div>
+          <div id="quick-btn-list">
+            <div class="lb-empty" id="quick-loading">Generating questions...</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  
+  <div id="screen-result">
+    <div id="result-container">
+      <div id="result-eyebrow">Case Closed</div>
+      <div id="result-verdict" class="perfect">—</div>
+      <div id="result-detail">—</div>
+
+      <div id="result-run-stats">
+        <div class="run-stat">
+          <span class="run-stat-val" id="rs-score">0</span>
+          <span class="run-stat-label">Score</span>
+        </div>
+        <div class="run-stat">
+          <span class="run-stat-val" id="rs-questions">0</span>
+          <span class="run-stat-label">Questions</span>
+        </div>
+        <div class="run-stat">
+          <span class="run-stat-val" id="rs-time">—</span>
+          <span class="run-stat-label">Time</span>
+        </div>
+        <div class="run-stat">
+          <span class="run-stat-val" id="rs-pressure">—</span>
+          <span class="run-stat-label">Peak pressure</span>
+        </div>
+      </div>
+
+      <div id="result-score-display">
+        <div class="score-number" id="result-score-num">0</div>
+        <div class="score-max">/ 100</div>
+      </div>
+
+      <div id="result-breakdown">
+        <div class="breakdown-title">Score Breakdown</div>
+        <div id="breakdown-rows"></div>
+      </div>
+
+      <div id="result-truth">
+        <div class="truth-title">The Truth — Revealed</div>
+        <div class="truth-row">
+          <span class="truth-key">Crime</span>
+          <span class="truth-val" id="truth-crime">—</span>
+        </div>
+        <div class="truth-row">
+          <span class="truth-key">Motive</span>
+          <span class="truth-val" id="truth-motive">—</span>
+        </div>
+        <div class="truth-row">
+          <span class="truth-key">Hidden Secret</span>
+          <span class="truth-val" id="truth-secret">—</span>
+        </div>
+        <div class="truth-row">
+          <span class="truth-key">Key Contradiction</span>
+          <span class="truth-val" id="truth-contradiction">—</span>
+        </div>
+      </div>
+
+      <div id="replay-tip" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--amber-dim);text-align:center;margin:0.5rem 0 1rem;letter-spacing:0.05em;border:1px dashed var(--border);padding:0.5rem 0.8rem;border-radius:4px;"></div>
+
+      <div id="result-actions">
+        <button class="btn-primary" onclick="startNewGame()">↺ New Suspect</button>
+        <button class="btn-sm" onclick="shareResult()" style="padding:0.7rem 1.2rem;">Share Score</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div id="screen-confession">
+  <div id="confession-eyebrow">⚠ They Broke</div>
+  <div id="confession-name">—</div>
+  <div id="confession-label">Spontaneous Confession — On Record</div>
+  <div id="confession-text"></div>
+  <div id="confession-actions">
+    <button class="btn-primary" onclick="proceedToAccusation()">File Formal Accusation →</button>
+    <button class="btn-sm" onclick="startNewGame()" style="padding:0.7rem 1.2rem;">↺ New Case</button>
+  </div>
+</div>
+
+
+<button id="sound-toggle" onclick="toggleSound()">♪ SFX ON</button>
+
+
+<div id="confession-overlay" style="display:none;">
+  <div id="confession-box">
+    <div id="confession-eyebrow">⚡ THEY BROKE</div>
+    <div id="confession-name"></div>
+    <div id="confession-text"></div>
+    <div id="confession-actions">
+      <button class="btn-primary" onclick="openAccusationModal(); hideConfessionOverlay();">File Accusation →</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div id="accusation-modal">
+    <div class="modal-title">Make Your Accusation</div>
+    <div class="modal-subtitle">This is your one chance. Choose your words carefully.</div>
+
+    <div class="form-group">
+      <label class="form-label" for="accuse-crime">What crime did they commit?</label>
+      <input class="form-input" id="accuse-crime" type="text" placeholder="e.g. poisoned the victim, staged the accident..." />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="accuse-motive">What was their motive?</label>
+      <input class="form-input" id="accuse-motive" type="text" placeholder="e.g. stood to inherit, feared being exposed..." />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="accuse-evidence">What evidence or contradictions did you notice?</label>
+      <textarea class="form-textarea" id="accuse-evidence" placeholder="Describe the contradictions or clues that gave them away..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAccusationModal()">Cancel</button>
+      <button class="btn-submit-accuse" onclick="submitAccusation()">File Accusation →</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const API = '';
+
+  let sessionId       = null;
+  let timerInterval   = null;
+  let startTime       = null;
+  let questionCount   = 0;
+  let hintCount       = 0;
+  let totalHintPenalty = 0;
+  let stressLevel     = 0;
+  let peakStress      = 0;
+  let analysisCounter = 0;
+  let currentSuspectName = '';
+
+
+  function showScreen(name) {
+    document.getElementById('screen-landing').style.display = 'none';
+    document.getElementById('screen-game').style.display   = 'none';
+    document.getElementById('screen-result').style.display = 'none';
+    if (name === 'landing') {
+      document.getElementById('screen-landing').style.display = 'flex';
+      renderLeaderboard();
+    } else if (name === 'game') {
+      document.getElementById('screen-game').style.display = 'flex';
+    } else if (name === 'result') {
+      document.getElementById('screen-result').style.display = 'flex';
+    }
+  }
+
+
+  function showLoading(msg) {
+    document.querySelector('#loading-overlay .loading-text').textContent = msg || 'Loading...';
+    document.getElementById('loading-overlay').classList.add('active');
+  }
+  function hideLoading() {
+    document.getElementById('loading-overlay').classList.remove('active');
+  }
+
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('stat-timer').textContent = formatTime(elapsed);
+    }, 1000);
+  }
+  function stopTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+  }
+
+
+  function appendMessage(role, text, flagged = false) {
+    const msgs  = document.getElementById('messages');
+    const wrap  = document.createElement('div');
+    wrap.className = `message ${role}`;
+
+    const bubble = document.createElement('div');
+    bubble.className = `msg-bubble${flagged ? ' contradiction-hint' : ''}`;
+
+    if (role === 'system') {
+      bubble.textContent = text;
+      wrap.appendChild(bubble);
+    } else {
+      const label = document.createElement('div');
+      label.className = `msg-label ${role}`;
+      label.textContent = role === 'detective' ? 'You' : role === 'suspect' ? currentSuspectName || 'Suspect' : '';
+      wrap.appendChild(label);
+      wrap.appendChild(bubble);
+    }
+
+    msgs.appendChild(wrap);
+    msgs.scrollTop = msgs.scrollHeight;
+    return bubble;
+  }
+
+  function showTypingIndicator() {
+    document.getElementById('typing-indicator').style.display = 'block';
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+  }
+  function hideTypingIndicator() {
+    document.getElementById('typing-indicator').style.display = 'none';
+  }
+
+
+  const STRESS_LABELS = [
+    'Composed','Composed','Uneasy','Uneasy',
+    'Nervous','Nervous','Rattled','Rattled',
+    'Cracking','Cracking','Breaking'
+  ];
+
+  function updateStressMeter(level) {
+    const prev = stressLevel;
+    stressLevel = level;
+    if (level > peakStress) peakStress = level;
+
+    const pct  = (level / 10) * 100;
+    const fill = document.getElementById('stress-bar-fill');
+    fill.style.width = pct + '%';
+    fill.classList.toggle('high', level >= 7);
+    document.getElementById('stress-level-text').textContent = STRESS_LABELS[level] || 'Breaking';
+
+    if (level > prev) playTensionTick();
+
+    if (level === 5 && !window._stressNote5) {
+      window._stressNote5 = true;
+      addNote('⚡ Suspect getting nervous — keep applying pressure.', false);
+    }
+    if (level === 8 && !window._stressNote8) {
+      window._stressNote8 = true;
+      addNote('🔥 Suspect is cracking — contradictions may slip out.', true);
+    }
+  }
+
+
+  function addNote(text, flagged = false) {
+    const list  = document.getElementById('notes-list');
+    const empty = document.getElementById('notes-empty');
+    if (empty) empty.remove();
+
+    const note = document.createElement('div');
+    note.className = `note-item${flagged ? ' flagged' : ''}`;
+    note.textContent = text;
+    list.appendChild(note);
+    list.scrollTop = list.scrollHeight;
+  }
+
+
+  function showCaseFile(suspect_name, crime_category, appearance) {
+    const box  = document.getElementById('case-file');
+    const body = document.getElementById('case-file-body');
+    const CRIME_ICONS = {
+      'Poisoning':       '☠',
+      'Staged Accident': '⚠',
+      'Financial Crime': '💰',
+      'Sabotage':        '🔧',
+      'Blackmail':       '✉',
+      'Arson':           '🔥',
+      'Identity Theft':  '🪪',
+    };
+    const icon = CRIME_ICONS[crime_category] || '?';
+    body.innerHTML =
+      `<strong>${suspect_name}</strong><br>` +
+      `${icon} ${crime_category}<br>` +
+      `<span style="font-size:0.75rem;color:var(--text3);">${appearance}</span>`;
+    box.style.display = 'block';
+  }
+
+
+  async function loadSuggestedQuestions() {
+    try {
+      const res  = await fetch(`${API}/api/suggested-questions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId }),
+      });
+      const data = await res.json();
+      if (!data.questions || !data.questions.length) return;
+
+      const container = document.getElementById('quick-btn-list');
+      container.innerHTML = '';
+      data.questions.forEach(q => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-btn';
+        btn.textContent = '→ ' + q;
+        btn.onclick = () => insertQuestion(q);
+        container.appendChild(btn);
+      });
+    } catch (e) {
+      console.warn('Suggested questions failed:', e);
+    }
+  }
+
+
+  async function runContradictionAnalysis() {
+    if (!sessionId) return;
+    try {
+      const res  = await fetch(`${API}/api/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId }),
+      });
+      const data = await res.json();
+      if (data.contradiction) {
+        addNote(`🧠 AI Analysis: ${data.contradiction}`, true);
+      }
+    } catch (e) {
+    }
+  }
+
+
+  async function startNewGame() {
+    showLoading('Generating AI suspect...');
+
+    stopTimer();
+    questionCount    = 0;
+    hintCount        = 0;
+    totalHintPenalty = 0;
+    stressLevel      = 0;
+    peakStress       = 0;
+    analysisCounter  = 0;
+    window._stressNote5 = false;
+    window._stressNote8 = false;
+    currentSuspectName  = '';
+
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('notes-list').innerHTML =
+      '<div class="note-empty" id="notes-empty">Contradictions and clues will appear here automatically.</div>';
+    document.getElementById('case-file').style.display = 'none';
+    document.getElementById('stat-questions').textContent = '0';
+    document.getElementById('stat-timer').textContent     = '0:00';
+    document.getElementById('accuse-crime').value   = '';
+    document.getElementById('accuse-motive').value  = '';
+    document.getElementById('accuse-evidence').value = '';
+    updateStressMeter(0);
+
+    const loadMsgs = [
+      'Generating AI suspect...', 'Crafting their alibi...',
+      'Planting the contradiction...', 'Preparing interrogation room...',
+    ];
+    let _li = 0;
+    const _lt = setInterval(() => {
+      _li = (_li + 1) % loadMsgs.length;
+      const el = document.querySelector('#loading-overlay .loading-text');
+      if (el) el.textContent = loadMsgs[_li];
+    }, 900);
+
+    try {
+      const res = await fetch(`${API}/api/new-game`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId || undefined }),
+      });
+      if (!res.ok) throw new Error('Server error');
+      const data = await res.json();
+      clearInterval(_lt);
+
+      sessionId          = data.session_id;
+      currentSuspectName = data.suspect_name;
+
+      document.getElementById('suspect-name-display').textContent  = data.suspect_name;
+      document.getElementById('suspect-appearance').textContent    = data.suspect_description;
+
+      const CRIME_ICONS = {
+        'Poisoning':'☠','Staged Accident':'⚠','Financial Crime':'💰',
+        'Sabotage':'🔧','Blackmail':'✉','Arson':'🔥','Identity Theft':'🪪'
+      };
+      const icon = CRIME_ICONS[data.crime_category] || '?';
+      document.getElementById('crime-category-display').textContent = `${icon} ${data.crime_category}`;
+
+      const portrait = document.getElementById('ascii-portrait');
+      if (data.ascii_portrait) {
+        portrait.textContent = data.ascii_portrait;
+        portrait.style.display = 'block';
+      } else {
+        portrait.style.display = 'none';
+      }
+
+      showCaseFile(data.suspect_name, data.crime_category, data.case_briefing || data.suspect_description);
+
+      hideLoading();
+      showScreen('game');
+      startTimer();
+
+      appendMessage('system', `Interrogation of ${data.suspect_name} — ${new Date().toLocaleTimeString()}`);
+
+      setTimeout(() => {
+        showTypingIndicator();
+        setTimeout(() => {
+          hideTypingIndicator();
+          const bubble = appendMessage('suspect', '');
+          typeText(bubble, data.opening_statement, 18);
+        }, 1200);
+      }, 400);
+
+      loadSuggestedQuestions();
+
+    } catch (err) {
+      clearInterval(_lt);
+      hideLoading();
+      alert('Failed to start game. Is the backend running? Error: ' + err.message);
+    }
+  }
+
+
+  async function sendMessage() {
+    const input = document.getElementById('message-input');
+    const text  = input.value.trim();
+    if (!text || !sessionId) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+
+    appendMessage('detective', text);
+    questionCount++;
+    document.getElementById('stat-questions').textContent = questionCount;
+
+    const sendBtn = document.getElementById('send-btn');
+    sendBtn.disabled = true;
+    showTypingIndicator();
+
+    try {
+      const res = await fetch(`${API}/api/interrogate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, message: text }),
+      });
+
+      if (!res.ok) {
+        hideTypingIndicator();
+        appendMessage('system', 'Server error. Try again.');
+        sendBtn.disabled = false;
+        return;
+      }
+
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer    = '';
+      let bubble    = null;
+      let fullText  = '';
+      let isConfession = false;
+
+      hideTypingIndicator();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (!raw) continue;
+
+          let evt;
+          try { evt = JSON.parse(raw); } catch { continue; }
+
+          if (evt.error) {
+            appendMessage('system', 'Error: ' + evt.error);
+            break;
+          }
+
+          if (evt.token !== undefined) {
+            if (!bubble) {
+              bubble = appendMessage('suspect', '');
+            }
+            fullText += evt.token;
+            bubble.textContent = fullText;
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+          }
+
+          if (evt.done) {
+            isConfession = evt.confession || false;
+            updateStressMeter(evt.stress_level || stressLevel);
+
+            if (isConfession) {
+              showConfessionOverlay(currentSuspectName, fullText);
+            }
+
+            analysisCounter++;
+            if (analysisCounter % 5 === 0) {
+              runContradictionAnalysis();
+            }
+          }
+        }
+      }
+
+    } catch (err) {
+      hideTypingIndicator();
+      appendMessage('system', 'Connection error: ' + err.message);
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+
+  function typeText(element, text, speed) {
+    let i = 0;
+    element.textContent = '';
+    const iv = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text[i++];
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+      } else {
+        clearInterval(iv);
+      }
+    }, speed);
+  }
+
+  function showConfessionOverlay(name, text) {
+    playConfessionStrike();
+    document.getElementById('confession-name').textContent = name + ' breaks down:';
+    document.getElementById('confession-text').textContent = text;
+    document.getElementById('confession-overlay').style.display = 'flex';
+  }
+
+  function hideConfessionOverlay() {
+    document.getElementById('confession-overlay').style.display = 'none';
+  }
+
+
+  async function getHint() {
+    if (!sessionId) return;
+    try {
+      const res  = await fetch(`${API}/api/hint`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId }),
+      });
+      const data = await res.json();
+      if (data.hint) {
+        hintCount++;
+        totalHintPenalty += 10;
+        playHintChime();
+        addNote(`💡 Hint (−10pts): ${data.hint}`, false);
+        appendMessage('system', '[Hint used — −10 points from final score]');
+      }
+    } catch (e) {
+      appendMessage('system', 'Could not get hint. Try again.');
+    }
+  }
+
+
+  function openAccusationModal() {
+    const msgs = document.getElementById('messages');
+    const allText = msgs ? msgs.innerText.toLowerCase() : '';
+
+    const crimeHints = {
+      'Poisoning':       ['poison','wine','drink','toxic','substance'],
+      'Staged Accident': ['fall','stairs','pushed','staged','accident'],
+      'Financial Crime': ['forge','document','inherit','will','fraud','money'],
+      'Sabotage':        ['brake','car','tamper','sabotage','mechanic'],
+      'Blackmail':       ['blackmail','secret','threaten','expose'],
+      'Arson':           ['fire','burn','arson'],
+      'Identity Theft':  ['identity','impersonate','documents','fraud'],
+    };
+    const motiveHints = {
+      'inherit':   'stood to inherit',
+      'money':     'financial gain',
+      'fired':     'feared being exposed and fired',
+      'blackmail': 'was being blackmailed',
+      'debt':      'drowning in debt',
+      'affair':    'secret affair',
+      'revenge':   'personal revenge',
+    };
+
+    const crimeField  = document.getElementById('accuse-crime');
+    const motiveField = document.getElementById('accuse-motive');
+
+    if (!crimeField.value) {
+      for (const [cat, kws] of Object.entries(crimeHints)) {
+        if (kws.some(k => allText.includes(k))) {
+          crimeField.value = cat.toLowerCase();
+          break;
+        }
+      }
+    }
+    if (!motiveField.value) {
+      for (const [kw, phrase] of Object.entries(motiveHints)) {
+        if (allText.includes(kw)) {
+          motiveField.value = phrase;
+          break;
+        }
+      }
+    }
+
+    document.getElementById('modal-overlay').classList.add('open');
+    if (crimeField.value && motiveField.value) {
+      document.getElementById('accuse-evidence').focus();
+    } else {
+      crimeField.focus();
+    }
+  }
+  function closeAccusationModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+  function closeModalOnOverlay(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeAccusationModal();
+  }
+
+  async function submitAccusation() {
+    const crime    = document.getElementById('accuse-crime').value.trim();
+    const motive   = document.getElementById('accuse-motive').value.trim();
+    const evidence = document.getElementById('accuse-evidence').value.trim();
+
+    if (!crime || !motive) { alert('Please fill in at least the crime and motive.'); return; }
+
+    closeAccusationModal();
+    showLoading('AI judge evaluating your accusation...');
+    stopTimer();
+
+    try {
+      const res  = await fetch(`${API}/api/accuse`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, crime, motive, evidence }),
+      });
+      const data = await res.json();
+      hideLoading();
+
+      if (!res.ok) { alert(data.error || 'Error submitting accusation.'); return; }
+      showResultScreen(data);
+
+    } catch (err) {
+      hideLoading();
+      alert('Failed to submit accusation: ' + err.message);
+    }
+  }
+
+
+  function showResultScreen(data) {
+    const result   = data.result;
+    const truth    = data.truth;
+    const adjScore = Math.max(0, result.score - totalHintPenalty);
+
+    document.getElementById('result-verdict').textContent  = result.verdict;
+    document.getElementById('result-verdict').className    = `result-verdict ${result.verdict_class}`;
+    document.getElementById('result-detail').textContent   = result.verdict_detail;
+
+    document.getElementById('rs-score').textContent     = adjScore;
+    document.getElementById('rs-questions').textContent = result.message_count || questionCount;
+    document.getElementById('rs-time').textContent      = result.time_taken || '—';
+    const pressureLabels = ['Low','Low','Low','Med','Med','Med','High','High','Max','Max','MAX'];
+    document.getElementById('rs-pressure').textContent  = pressureLabels[Math.min(peakStress, 10)];
+
+    const scoreEl = document.getElementById('result-score-num');
+    animateCount(scoreEl, 0, adjScore, 1000);
+
+    const rowsEl = document.getElementById('breakdown-rows');
+    rowsEl.innerHTML = '';
+    result.breakdown.forEach(b => {
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+      row.innerHTML = `<span class="breakdown-label">${b.label}</span><span class="breakdown-points ${b.correct ? 'correct' : 'wrong'}">${b.points}</span>`;
+      rowsEl.appendChild(row);
+    });
+    if (totalHintPenalty > 0) {
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+      row.innerHTML = `<span class="breakdown-label">Hint penalty (${hintCount} used)</span><span class="breakdown-points wrong">−${totalHintPenalty}</span>`;
+      rowsEl.appendChild(row);
+    }
+
+    document.getElementById('truth-crime').textContent         = truth.crime;
+    document.getElementById('truth-motive').textContent        = truth.motive;
+    document.getElementById('truth-secret').textContent        = truth.secret;
+    document.getElementById('truth-contradiction').textContent = truth.key_contradiction;
+
+    const challenges = [
+      'Challenge: solve the next case in under 8 questions.',
+      'Challenge: get a perfect score without using any hints.',
+      'Challenge: break the suspect before question 12.',
+      'Challenge: try a different style — pure pressure vs slow patience.',
+    ];
+    const tipEl = document.getElementById('replay-tip');
+    if (tipEl) tipEl.textContent = challenges[Math.floor(Math.random() * challenges.length)];
+
+    saveRun({
+      score:   adjScore,
+      verdict: result.verdict,
+      suspect: currentSuspectName,
+      time:    result.time_taken,
+      questions: result.message_count || questionCount,
+      confessed: data.confessed || false,
+    });
+
+    showScreen('result');
+  }
+
+  function animateCount(el, from, to, duration) {
+    const start  = performance.now();
+    const update = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(from + (to - from) * eased);
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+
+
+  const LB_KEY = 'interrogation_leaderboard_v1';
+
+  function saveRun(run) {
+    let lb = [];
+    try { lb = JSON.parse(localStorage.getItem(LB_KEY)) || []; } catch {}
+    lb.push({ ...run, date: new Date().toLocaleDateString() });
+    lb.sort((a, b) => b.score - a.score);
+    lb = lb.slice(0, 7);
+    localStorage.setItem(LB_KEY, JSON.stringify(lb));
+  }
+
+  function renderLeaderboard() {
+    const list = document.getElementById('leaderboard-list');
+    if (!list) return;
+    let lb = [];
+    try { lb = JSON.parse(localStorage.getItem(LB_KEY)) || []; } catch {}
+    list.innerHTML = '';
+
+    if (!lb.length) return;
+
+    lb.forEach((run, i) => {
+      const row = document.createElement('div');
+      row.className = 'lb-row';
+      const confBadge = run.confessed ? ' 💥' : '';
+      row.innerHTML =
+        `<span class="lb-rank">#${i + 1}</span>` +
+        `<span class="lb-name">${run.suspect || 'Unknown'}${confBadge}</span>` +
+        `<span class="lb-score">${run.score}</span>` +
+        `<span class="lb-verdict">${run.verdict || ''}</span>`;
+      list.appendChild(row);
+    });
+  }
+
+
+  function shareResult() {
+    const score   = document.getElementById('result-score-num').textContent;
+    const verdict = document.getElementById('result-verdict').textContent;
+    const text    = `I scored ${score}/100 in "Every Answer Hides a Crack" — verdict: ${verdict}. Can you beat it?`;
+    if (navigator.share) {
+      navigator.share({ title: 'Every Answer Hides a Crack', text });
+    } else {
+      navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
+    }
+  }
+
+
+  function insertQuestion(text) {
+    const input = document.getElementById('message-input');
+    input.value = text;
+    input.focus();
+    adjustTextarea(input);
+  }
+
+
+  const msgInput = document.getElementById('message-input');
+
+  function adjustTextarea(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+
+  msgInput.addEventListener('input', () => adjustTextarea(msgInput));
+  msgInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+
+  let audioCtx = null;
+  let soundEnabled = true;
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('sound-toggle').textContent = soundEnabled ? '♪ SFX ON' : '♪ SFX OFF';
+  }
+
+  function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playKeyClick() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioCtx();
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.008));
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const gain = ctx.createGain();
+      gain.gain.value = 0.08;
+      src.connect(gain); gain.connect(ctx.destination);
+      src.start();
+    } catch {}
+  }
+
+  function playTensionTick() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = 220 + stressLevel * 18;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.07, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.18);
+    } catch {}
+  }
+
+  function playConfessionStrike() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.setValueAtTime(80, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.4);
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.5);
+    } catch {}
+  }
+
+  function playHintChime() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioCtx();
+      [440, 554, 659].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        const t = ctx.currentTime + i * 0.09;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.08, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(t); osc.stop(t + 0.3);
+      });
+    } catch {}
+  }
+
+  document.getElementById('message-input').addEventListener('keydown', () => {
+    playKeyClick();
+  });
+
+  showScreen('landing');
+</script>
+
+</body>
+</html>
+
