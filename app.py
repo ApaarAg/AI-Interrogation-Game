@@ -135,8 +135,11 @@ def _calculate_stress_delta(message: str, reply: str, suspect: dict) -> int:
 
 @app.route("/")
 def index():
-    return send_from_directory("frontend", "index.html")
+    return "Backend is running 🚀"
 
+@app.route("/ui")
+def serve_ui():
+    return send_from_directory("frontend", "index.html")
 
 @app.route("/api/new-game", methods=["POST"])
 def new_game():
